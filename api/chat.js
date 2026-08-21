@@ -1,20 +1,7 @@
-import fs from 'fs';
-import path from 'path';
-
-// Load projects database on the server (never exposed to client)
-let PROJECTS = [];
-try {
-  const jsonPath = path.join(process.cwd(), 'api', 'projects.json');
-  if (fs.existsSync(jsonPath)) {
-    const raw = fs.readFileSync(jsonPath, 'utf-8');
-    PROJECTS = JSON.parse(raw);
-  }
-} catch (e) {
-  console.error("Failed to load projects server-side:", e);
-}
+import { PROJECTS } from './data.js';
 
 function scoreAndRank(query, topN = 10) {
-  if (!query || !PROJECTS.length) return [];
+  if (!query || !PROJECTS || !PROJECTS.length) return [];
   const words = query.toLowerCase().split(/\s+/).filter(w => w.length > 2);
   return PROJECTS
     .map(p => {
@@ -59,7 +46,7 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Query is required.' });
   }
 
-  // Server-side retrieval: Only the relevant projects are processed
+  // Server-side retrieval: Only relevant project summaries are processed
   const topProjects = scoreAndRank(query, 8);
   const topCatalog = topProjects.map((p, i) =>
     `${i+1}. [${p.project_id}] "${p.title}" (${p.dept}) — Mentor: ${p.guide || "N/A"}\n   Description: ${(p.description || "No description").slice(0, 320)}\n   End Users: ${(p.end_users || "Not specified").slice(0, 140)}\n   Students: ${(p.students || []).map(s => s.name).slice(0, 4).join(", ") || "N/A"}`
@@ -124,7 +111,7 @@ ${fullCatalog}`;
       if (response.ok) {
         const data = await response.json();
         const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
-        return res.status(200).json({ text, topProjects });
+        return res.status(200).json({ text });
       }
 
       const errText = await response.text();
