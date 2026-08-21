@@ -21,6 +21,55 @@ function scoreAndRank(query, topN = 10) {
     .slice(0, topN);
 }
 
+function generateLocalFallback(query) {
+  const top = scoreAndRank(query, 5);
+  const direct = top.filter(m => m.score >= 3);
+
+  if (direct.length >= 1) {
+    let html = `<strong>Direct Project Match:</strong> Atria engineering teams are actively developing solutions in this domain.<br/><br/>`;
+    direct.slice(0, 2).forEach(p => {
+      const guideName = p.guide ? p.guide.split("(")[0].trim() : "Atria Faculty";
+      const themeTag = p.dept;
+      const students = (p.students || []).slice(0, 3).map(s => s.name).join(", ");
+      html += `
+        <div class="result-card" onclick="openModal('${p.project_id}')">
+          <div class="rc-meta"><span class="rc-id">${p.project_id}</span><span class="rc-dept">${p.dept}</span></div>
+          <div class="rc-title">${p.title || "Untitled"}</div>
+          ${p.description ? `<div class="rc-desc">${p.description.slice(0, 180)}...</div>` : ""}
+          <div class="rc-footer">
+            <span class="chip">${themeTag}</span>
+            <span class="chip">${guideName}</span>
+          </div>
+          ${students ? `<div class="rc-students">👥 <span>${students}</span></div>` : ""}
+        </div>
+      `;
+    });
+    return html;
+  } else if (top.length >= 2) {
+    let html = `<div class="synergy-block"><div class="synergy-header">Multi-Project Ecosystem Synergy</div>`;
+    html += `Our ASIP ecosystem connects complementary projects across departments to address this problem:<br/><br/>`;
+    top.slice(0, 3).forEach(p => {
+      const guideName = p.guide ? p.guide.split("(")[0].trim() : "Atria Faculty";
+      html += `
+        <div class="result-card" onclick="openModal('${p.project_id}')">
+          <div class="rc-meta"><span class="rc-id">${p.project_id}</span><span class="rc-dept">${p.dept}</span></div>
+          <div class="rc-title">${p.title || "Untitled"}</div>
+          ${p.description ? `<div class="rc-desc">${p.description.slice(0, 180)}...</div>` : ""}
+          <div class="rc-footer">
+            <span class="chip">${p.dept}</span>
+            <span class="chip">${guideName}</span>
+          </div>
+        </div>
+      `;
+    });
+    html += `</div>`;
+    return html;
+  } else {
+    return `<strong>Frontier Problem Statement:</strong><br/><br/>
+      While our current 220 active projects do not directly target this specific scope, this problem represents a prime opportunity for incoming ASIP engineering cohorts (Sem 3–8).`;
+  }
+}
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -34,25 +83,37 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
-  const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) {
-    return res.status(500).json({
-      error: 'GEMINI_API_KEY is not configured in Vercel Environment Variables.'
-    });
+  // Parse body safely
+  let body = req.body;
+  if (typeof body === 'string') {
+    try {
+      body = JSON.parse(body);
+    } catch (e) {
+      body = {};
+    }
   }
+  const query = body?.query || "";
 
-  const { query } = req.body || {};
   if (!query) {
     return res.status(400).json({ error: 'Query is required.' });
   }
 
-  // Server-side retrieval: Only relevant project summaries are processed
+  // Clean API key (remove accidental quotes or whitespace from Vercel UI)
+  const apiKey = (process.env.GEMINI_API_KEY || "").trim().replace(/^["']|["']$/g, "");
+
+  // If no API key is configured yet, gracefully return local matching engine
+  if (!apiKey) {
+    console.warn("GEMINI_API_KEY is not set. Using local matching engine.");
+    const fallbackText = generateLocalFallback(query);
+    return res.status(200).json({ text: fallbackText });
+  }
+
   const topProjects = scoreAndRank(query, 8);
   const topCatalog = topProjects.map((p, i) =>
     `${i+1}. [${p.project_id}] "${p.title}" (${p.dept}) — Mentor: ${p.guide || "N/A"}\n   Description: ${(p.description || "No description").slice(0, 320)}\n   End Users: ${(p.end_users || "Not specified").slice(0, 140)}\n   Students: ${(p.students || []).map(s => s.name).slice(0, 4).join(", ") || "N/A"}`
   ).join("\n\n");
 
-  const fullCatalog = PROJECTS.map(p => `[${p.project_id}] ${p.title} (${p.dept})`).join("\n");
+  const fullCatalog = (PROJECTS || []).map(p => `[${p.project_id}] ${p.title} (${p.dept})`).join("\n");
 
   const systemPrompt = `You are ADRA, the official AI Intelligence Assistant for Atria Institute of Technology, Bangalore.
 
@@ -93,7 +154,7 @@ ${fullCatalog}`;
     generationConfig: { temperature: 0.7, maxOutputTokens: 1200 }
   };
 
-  const primaryModel = process.env.GEMINI_MODEL || 'gemini-flash-latest';
+  const primaryModel = (process.env.GEMINI_MODEL || 'gemini-flash-latest').trim();
   const fallbackModels = ['gemini-flash-latest', 'gemini-3.7-flash', 'gemini-3.6-flash'];
   const modelsToTry = [primaryModel, ...fallbackModels.filter(m => m !== primaryModel)];
 
@@ -111,7 +172,9 @@ ${fullCatalog}`;
       if (response.ok) {
         const data = await response.json();
         const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
-        return res.status(200).json({ text });
+        if (text) {
+          return res.status(200).json({ text });
+        }
       }
 
       const errText = await response.text();
@@ -127,7 +190,8 @@ ${fullCatalog}`;
     }
   }
 
-  return res.status(lastError?.status || 500).json({
-    error: lastError?.message || 'Failed to generate response from ADRA AI.'
-  });
+  // Graceful fallback to server-side search engine if upstream API times out
+  console.error("Gemini API failed, falling back to local response:", lastError);
+  const fallbackText = generateLocalFallback(query);
+  return res.status(200).json({ text: fallbackText });
 }
