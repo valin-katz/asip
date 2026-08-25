@@ -3,266 +3,32 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>ADRA | Atria Societal Impact Projects (ASIP)</title>
-  <meta name="description" content="ADRA — The official AI intelligence platform for Atria Institute of Technology's Societal Impact Projects (ASIP)."/>
+  <title>ASIP AI — Atria Societal Impact Intelligence</title>
+  <meta name="description" content="Official research intelligence platform for Atria Institute of Technology's Societal Impact Projects (ASIP). Indexing 220+ verified engineering solutions."/>
   <link rel="icon" type="image/png" href="Atria icon.png"/>
   <link rel="apple-touch-icon" href="Atria icon.png"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="styles.css"/>
+  
+  <!-- React 18 & Babel Standalone for Seamless Reactive Execution -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
 <body>
 
-<!-- Announcement Bar -->
-<div class="announcement">
-  <strong>Atria Societal Impact Projects (ASIP)</strong> &nbsp;·&nbsp; <span>220+ Verified Student Solutions · 6 Semesters (Sem 3 → 8)</span>
-</div>
-
-<!-- Header -->
-<header>
-  <div class="nav-inner">
-    <a class="nav-brand" href="#">
-      <img src="assets/atria-header.png" alt="Atria Institute of Technology" class="brand-header-img" onerror="this.src='Header.png'"/>
-      <div class="brand-divider"></div>
-      <div class="nav-adra-badge">
-        <div class="adra-title">ADRA <span class="adra-tag">AI</span></div>
-        <div class="adra-subtitle">Societal Impact Intelligence</div>
-      </div>
-    </a>
-    
-    <nav class="nav-pills">
-      <a class="nav-pill-link active" href="#" onclick="scrollToChat()">ADRA AI Explorer</a>
-      <a class="nav-pill-link" href="#" onclick="scrollToProjects()">Project Index</a>
-      <a class="nav-pill-link" href="#" onclick="scrollToAbout()">ASIP Framework</a>
-    </nav>
-    
-    <div class="nav-right">
-      <div class="nav-counter"><span class="live-dot"></span> 220 Projects Live</div>
-      <button class="btn-ask" onclick="document.getElementById('chatInput').focus()">
-        <img src="assets/atria-icon.png" alt="Atria" onerror="this.src='Atria icon.png'"/>
-        <span>Ask ADRA</span>
-      </button>
-    </div>
-  </div>
-</header>
-
-<!-- Main Container -->
-<div class="page-wrap">
-
-  <!-- Hero Section -->
-  <div class="hero" id="heroSection">
-    <div class="hero-badge">
-      <img src="assets/atria-icon.png" alt="" class="hero-badge-icon" onerror="this.src='Atria icon.png'"/>
-      Atria Engineering Ecosystem · Sem 3 to 8
-    </div>
-    <h1>
-      Atria Students Are Already Solving <br/>
-      <span class="highlight">Society's Critical Challenges</span>
-    </h1>
-    <p class="hero-desc">
-      Explore 220+ interdisciplinary engineering projects spanning Healthcare, Agriculture, Infrastructure, Education, Cybersecurity, and Sustainability. Powered by <strong>ADRA AI</strong>.
-    </p>
-
-    <!-- Metrics Strip -->
-    <div class="kpi-strip">
-      <div class="kpi-cell"><div class="kpi-val red" id="kpiProjects">220</div><div class="kpi-lbl">Active Projects</div></div>
-      <div class="kpi-cell"><div class="kpi-val" id="kpiStudents">900+</div><div class="kpi-lbl">Student Engineers</div></div>
-      <div class="kpi-cell"><div class="kpi-val">5</div><div class="kpi-lbl">Engineering Depts</div></div>
-      <div class="kpi-cell"><div class="kpi-val">6</div><div class="kpi-lbl">Academic Semesters</div></div>
-      <div class="kpi-cell"><div class="kpi-val">2024</div><div class="kpi-lbl">Cohort</div></div>
+  <!-- React Application Mount Point -->
+  <div id="root">
+    <!-- Initial Server-Rendered Loading Skeleton for Zero Layout Shift -->
+    <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:sans-serif;color:#64748B;font-size:14px;background:#F8FAFC;">
+      Connecting to ASIP Intelligence Repository...
     </div>
   </div>
 
-  <!-- Main Grid: ADRA Chat & Directory -->
-  <div class="main-grid" id="chatSection">
-
-    <!-- ADRA Chat Panel -->
-    <div class="chat-panel">
-      <div class="chat-topbar">
-        <div class="chat-topbar-left">
-          <div class="bot-avatar-wrap">
-            <img src="assets/atria-icon.png" alt="ADRA" class="bot-avatar-img" onerror="this.src='Atria icon.png'"/>
-          </div>
-          <div>
-            <div class="chat-bot-name">ADRA Assistant</div>
-            <div class="chat-bot-sub">
-              <span class="live-dot"></span>
-              Atria Societal Impact Intelligence · 220 Projects Indexed
-            </div>
-          </div>
-        </div>
-        <div class="chat-topbar-badge">ADRA AI v2</div>
-      </div>
-
-      <div class="chat-msgs" id="chatMsgs">
-        <div class="msg-row bot">
-          <div class="msg-av bot-av">
-            <img src="assets/atria-icon.png" alt="ADRA" onerror="this.src='Atria icon.png'"/>
-          </div>
-          <div class="msg-bubble">
-            <strong>Hello! I am ADRA</strong>, the official AI intelligence assistant for the Atria Societal Impact Projects (ASIP) ecosystem.<br/><br/>
-            I have deep knowledge of all <strong>220 student-led projects</strong> currently in development across our Computer Science, Information Science, Electronics, Civil, and Mechanical engineering departments.<br/><br/>
-            Describe any real-world societal challenge, and I will identify which Atria teams are already building the solution — or how our multi-disciplinary project ecosystem collaborates to deliver it.
-          </div>
-        </div>
-      </div>
-
-      <div class="chat-suggestions" id="chatSuggestions">
-        <span class="sugg-chip" onclick="useSuggestion('Smart farming and crop disease management')">
-          <span class="svg-icon"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-10 10c0 4.4 2.9 8.2 7 9.5V14h-2v-2h2v-1.6C9 8.6 10.1 7 12.5 7H14v2h-1.5c-.8 0-1 .4-1 1v2H14v2h-2.5v7.5c4.1-1.3 7-5.1 7-9.5A10 10 0 0 0 12 2z"/></svg></span>
-          Smart Farming
-        </span>
-        <span class="sugg-chip" onclick="useSuggestion('Healthcare diagnostic systems for rural communities')">
-          <span class="svg-icon"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span>
-          Rural Healthcare
-        </span>
-        <span class="sugg-chip" onclick="useSuggestion('Waste management and automated sorting')">
-          <span class="svg-icon"><svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></span>
-          Waste Management
-        </span>
-        <span class="sugg-chip" onclick="useSuggestion('Emergency vehicle and ambulance traffic clearance')">
-          <span class="svg-icon"><svg viewBox="0 0 24 24"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg></span>
-          Traffic Clearance
-        </span>
-        <span class="sugg-chip" onclick="useSuggestion('Assistive navigation devices for visually impaired persons')">
-          <span class="svg-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="4" r="2"/><path d="M4 8h16"/><path d="M12 8v8"/><path d="M8 20l4-4 4 4"/></svg></span>
-          Assistive Devices
-        </span>
-        <span class="sugg-chip" onclick="useSuggestion('Financial fraud and digital transaction security')">
-          <span class="svg-icon"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
-          Cybersecurity
-        </span>
-      </div>
-
-      <div class="chat-input-row">
-        <textarea
-          class="chat-textarea" id="chatInput"
-          placeholder="Ask ADRA about any societal challenge (e.g., 'Do you have projects tackling water quality monitoring?')"
-          rows="1"
-          onkeydown="handleEnter(event)"
-          oninput="autoGrow(this)"
-        ></textarea>
-        <button class="send-btn" id="sendBtn" onclick="sendMessage()" title="Send to ADRA">
-          <span class="svg-icon"><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></span>
-        </button>
-      </div>
-      <div class="gemini-badge">
-        <span class="svg-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg></span>
-        ADRA AI verifies project matches against Atria's official ASIP curriculum repository
-      </div>
-    </div>
-
-    <!-- Sidebar: Directory & Explorer -->
-    <div class="sidebar">
-      <!-- Search & Filters -->
-      <div class="panel">
-        <div class="panel-head">
-          <h3>
-            <span class="svg-icon"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
-            Project Directory
-          </h3>
-          <span class="count-badge" id="projCountBadge">—</span>
-        </div>
-        <div class="search-wrap">
-          <span class="svg-icon search-icon-abs"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
-          <input class="sidebar-search" id="sidebarSearch" placeholder="Search by title, domain, keywords…" oninput="filterSidebar()"/>
-        </div>
-        <div class="dept-tabs">
-          <span class="dept-tab active" data-dept="ALL" onclick="setDept(this)">All</span>
-          <span class="dept-tab" data-dept="ISE" onclick="setDept(this)">ISE</span>
-          <span class="dept-tab" data-dept="CSE" onclick="setDept(this)">CSE</span>
-          <span class="dept-tab" data-dept="ECE" onclick="setDept(this)">ECE</span>
-          <span class="dept-tab" data-dept="CV"  onclick="setDept(this)">Civil</span>
-          <span class="dept-tab" data-dept="ME"  onclick="setDept(this)">Mech</span>
-        </div>
-      </div>
-
-      <!-- Domain Themes -->
-      <div class="panel">
-        <div class="panel-head">
-          <h3>
-            <span class="svg-icon"><svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></span>
-            Impact Domains
-          </h3>
-        </div>
-        <div class="theme-grid" id="themeGrid"></div>
-      </div>
-
-      <!-- Project List -->
-      <div class="panel" id="projectsSection">
-        <div class="proj-scroll" id="projScroll"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ASIP Curriculum Framework -->
-  <div class="info-section" id="aboutSection">
-    <div class="section-eyebrow">The ASIP Academic Model</div>
-    <h2 class="section-title">Six Semesters. Engineered for Tangible Impact.</h2>
-    <p class="section-desc">At Atria Institute of Technology, ASIP (Atria Societal Impact Projects) is a mandatory, credit-bearing 6-semester engineering sequence starting in the 3rd semester. Students formulate problem statements with real stakeholders and build validated, deployable hardware and software solutions.</p>
-
-    <div class="sem-track">
-      <div class="sem-card">
-        <div class="sem-card-num">03</div>
-        <div class="sem-card-lbl">Semester 3</div>
-        <div class="sem-card-desc">Problem discovery, end-user interviews & baseline requirements</div>
-      </div>
-      <div class="sem-card">
-        <div class="sem-card-num">04</div>
-        <div class="sem-card-lbl">Semester 4</div>
-        <div class="sem-card-desc">Architecture design, proof-of-concept & mentor reviews</div>
-      </div>
-      <div class="sem-card highlight">
-        <div class="sem-card-num">05–06</div>
-        <div class="sem-card-lbl">Semesters 5 & 6</div>
-        <div class="sem-card-desc">Functional MVP engineering, rigorous field trials & user testing</div>
-      </div>
-      <div class="sem-card">
-        <div class="sem-card-num">07–08</div>
-        <div class="sem-card-lbl">Semesters 7 & 8</div>
-        <div class="sem-card-desc">Final production deployment, scaling & stakeholder handoff</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Footer -->
-<footer>
-  <div class="footer-inner">
-    <div class="footer-top">
-      <img src="assets/atria-footer.png" alt="Atria Institute of Technology" class="footer-banner-img" onerror="this.src='footer.png'"/>
-      <div class="footer-adra-info">
-        <div class="footer-adra-title">ADRA Intelligence Platform</div>
-        <div class="footer-adra-sub">Center for Societal Impact Engineering · Atria IT, Bangalore</div>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <div>© 2024–2026 Atria Institute of Technology. All rights reserved.</div>
-      <div>Designed for the Atria IT Academic & Research Ecosystem</div>
-    </div>
-  </div>
-</footer>
-
-<!-- Project Details Modal -->
-<div class="modal-bg" id="modalBg" onclick="closeModalOutside(event)">
-  <div class="modal-box" id="modalBox">
-    <button class="modal-close-btn" onclick="closeModal()" title="Close">
-      <span class="svg-icon"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>
-    </button>
-    <div class="modal-proj-id-line" id="mId"></div>
-    <div class="modal-proj-title" id="mTitle"></div>
-    <div class="modal-chips" id="mChips"></div>
-    <div class="modal-meta-grid" id="mMeta"></div>
-    <div class="modal-section" id="mDesc"></div>
-    <div class="modal-section" id="mUsers"></div>
-    <div class="modal-section" id="mStudents"></div>
-  </div>
-</div>
-
-<!-- Dataset & Application Engine -->
-<script src="projects.js"></script>
-<script src="script.js"></script>
+  <!-- React Component Engine -->
+  <script type="text/babel" src="app.jsx"></script>
 
 </body>
 </html>
